@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///Users/imilbaum/Downloads/notch-idb-deck-final.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notch × Israel Discount Bank</title>
+<link href="./notch_files/css2" rel="stylesheet">
+<style>
+
+@property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:    #0D1117;
+  --bg2:   #131922;
+  --card:  #1B2333;
+  --card2: #222D40;
+  --border:rgba(255,255,255,0.07);
+  --orange:#FF561B;
+  --ora-lt:#FF8B38;
+  --blue:  #5182FF;
+  --white: #FFFFFF;
+  --dim:   #8A96A9;
+  --muted: #4D5A6D;
+  --green: #4ADE80;
+  --red:   #FF4C4C;
+  --gold:  #F0D652;
+}
+
+html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; }
+
+/* ─── DECK ENGINE ─── */
+#deck { width:100vw; height:100vh; position:relative; overflow:hidden; }
+
+.slide {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  padding:5.5vh 6.5vw 10.5vh;
+  opacity:0; pointer-events:none;
+  transition:opacity .5s cubic-bezier(.4,0,.2,1), transform .5s cubic-bezier(.4,0,.2,1);
+  transform:translateX(36px);
+}
+.slide.active { opacity:1; pointer-events:all; transform:translateX(0); }
+.slide.prev   { opacity:0; transform:translateX(-36px); transition-duration:.4s; }
+
+/* ─── CHROME ─── */
+#progress { position:fixed; bottom:0; left:0; height:3px; background:var(--orange); transition:width .45s ease; z-index:300; border-radius:0 2px 2px 0; }
+#counter  { position:fixed; bottom:5vh; left:50%; transform:translateX(-50%); font-size:11px; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; z-index:300; }
+
+/* ─── LOGO BAR ─── */
+.logo-bar {
+  position:absolute; bottom:5vh; left:6.5vw; right:6.5vw;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.notch-logo { height:21px; opacity:.9; }
+.idb-logo-text {
+  font-family:'Barlow',sans-serif; font-weight:700; font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.75);
+}
+
+/* ─── TYPE SCALE ─── */
+.hero { font-family:'Barlow',sans-serif; font-weight:900; font-size:clamp(44px,6vw,80px); line-height:1.03; letter-spacing:-.025em; }
+.h1   { font-family:'Barlow',sans-serif; font-weight:700; font-size:clamp(32px,4vw,52px); line-height:1.1;  letter-spacing:-.02em; }
+.h2   { font-family:'Barlow',sans-serif; font-weight:600; font-size:clamp(22px,2.6vw,34px); line-height:1.2; }
+.h3   { font-family:'Barlow',sans-serif; font-weight:600; font-size:clamp(17px,1.9vw,25px); line-height:1.3; }
+.body { font-size:clamp(14px,1.3vw,18px); line-height:1.65; }
+.sm   { font-size:clamp(12px,1.05vw,15px); line-height:1.55; color:var(--dim); }
+.cap  { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+.stat { font-family:'Barlow',sans-serif; font-weight:900; font-size:clamp(72px,10vw,130px); line-height:1; letter-spacing:-.04em; }
+
+.t-ora   { color:var(--orange); }
+.t-blue  { color:var(--blue); }
+.t-green { color:var(--green); }
+.t-red   { color:var(--red); }
+.t-dim   { color:var(--dim); }
+.t-white { color:var(--white); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp  { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes shimmer { from{background-position:200% center} to{background-position:-200% center} }
+@keyframes spin    { to{--angle:360deg} }
+@keyframes beam    { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes glow    { 0%,100%{box-shadow:0 0 24px rgba(255,86,27,.15)} 50%{box-shadow:0 0 56px rgba(255,86,27,.45),0 0 100px rgba(255,86,27,.1)} }
+@keyframes lineGrow{ from{width:0} to{width:56px} }
+
+.fu { opacity:0; }
+.slide.active .fu { animation:fadeUp .5s ease forwards; }
+.fu.d1{animation-delay:.07s} .fu.d2{animation-delay:.18s} .fu.d3{animation-delay:.29s}
+.fu.d4{animation-delay:.40s} .fu.d5{animation-delay:.51s} .fu.d6{animation-delay:.62s}
+.fu.d7{animation-delay:.73s}
+
+.shimmer {
+  background:linear-gradient(110deg,var(--orange) 10%,var(--ora-lt) 35%,#fff 50%,var(--ora-lt) 65%,var(--orange) 90%);
+  background-size:200% auto;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  animation:shimmer 2.8s linear infinite;
+}
+.beam-line {
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--orange),transparent);
+  background-size:200% 100%;
+  animation:beam 2.2s linear infinite;
+}
+
+/* ─── GLOW CARD ─── */
+.glow-card { position:relative; border-radius:16px; isolation:isolate; animation:glow 3s ease-in-out infinite; }
+.glow-card::before {
+  content:''; position:absolute; inset:-2px; border-radius:18px; z-index:-1;
+  background:conic-gradient(from var(--angle),var(--orange),var(--blue),var(--ora-lt),var(--orange));
+  animation:spin 4.5s linear infinite;
+}
+.glow-card-inner { background:var(--card); border-radius:14px; padding:28px; }
+
+/* ─── CTA ─── */
+.cta-btn {
+  position:relative; display:inline-flex; align-items:center; justify-content:center;
+  padding:17px 44px; border-radius:12px; isolation:isolate; border:none; cursor:pointer;
+  font-family:'Barlow',sans-serif; font-weight:700; font-size:20px; color:var(--white);
+  background:var(--card); text-decoration:none;
+}
+.cta-btn::before {
+  content:''; position:absolute; inset:-2px; border-radius:14px; z-index:-1;
+  background:conic-gradient(from var(--angle),var(--orange),var(--blue),var(--ora-lt),var(--orange));
+  animation:spin 3s linear infinite;
+}
+
+/* ─── BASE COMPONENTS ─── */
+.card    { background:var(--card);  border-radius:14px; padding:26px; border:1px solid var(--border); }
+.card-sm { background:var(--card);  border-radius:12px; padding:18px; border:1px solid var(--border); }
+.card2   { background:var(--card2); border-radius:14px; padding:26px; border:1px solid var(--border); }
+
+.badge {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:5px 13px; border-radius:999px; font-size:11px; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase;
+}
+.b-ora  { background:rgba(255,86,27,.12);  color:var(--orange); border:1px solid rgba(255,86,27,.3); }
+.b-blue { background:rgba(81,130,255,.12); color:var(--blue);   border:1px solid rgba(81,130,255,.3); }
+.b-grn  { background:rgba(74,222,128,.12); color:var(--green);  border:1px solid rgba(74,222,128,.3); }
+.b-red  { background:rgba(255,76,76,.12);  color:var(--red);    border:1px solid rgba(255,76,76,.3); }
+
+.sep { height:3px; background:var(--orange); border-radius:2px; margin:12px 0; width:0; }
+.slide.active .sep { animation:lineGrow .5s ease .25s forwards; }
+
+.exec-step {
+  display:flex; align-items:flex-start; gap:16px;
+  padding:16px 20px; background:var(--card); border-radius:12px;
+  border:1px solid var(--border); border-left:3px solid var(--orange);
+}
+
+/* ─── NEW: TIER ROWS ─── */
+.tier-row {
+  display:flex; align-items:flex-start; gap:18px;
+  padding:16px 20px; background:var(--card); border-radius:12px;
+  border:1px solid var(--border);
+}
+.tier-num {
+  font-family:'Barlow',sans-serif; font-weight:900; font-size:34px;
+  color:var(--orange); line-height:1; min-width:38px;
+}
+
+/* ─── NEW: PROOF STAT ─── */
+.proof-n {
+  font-family:'Barlow',sans-serif; font-weight:900;
+  font-size:clamp(40px,4.8vw,66px); line-height:1;
+  color:var(--orange); letter-spacing:-.03em;
+}
+
+/* ─── NEW: QUOTE BLOCK ─── */
+.quote-block {
+  border-left:3px solid var(--orange); padding:14px 22px;
+  background:rgba(255,86,27,.04); border-radius:0 12px 12px 0;
+}
+
+/* ─── COMPARISON TABLE ─── */
+.comp-head, .comp-row {
+  display:grid; grid-template-columns:1.2fr 1fr 1fr;
+  padding:12px 0; border-bottom:1px solid var(--border);
+}
+.comp-head { padding:6px 0; }
+.comp-row:last-child { border-bottom:none; }
+.comp-row.hl { background:rgba(255,86,27,.04); border-radius:6px; padding:12px 8px; }
+.cl { color:var(--dim);   font-size:14px; }
+.cn { color:var(--white); font-size:14px; font-weight:500; }
+.co { color:var(--muted); font-size:14px; }
+
+/* ─── POC ─── */
+.poc { border-top:3px solid var(--orange); }
+
+/* ─── GRIDS ─── */
+.g2      { display:grid; grid-template-columns:1fr 1fr;         gap:20px; }
+.g3      { display:grid; grid-template-columns:1fr 1fr 1fr;     gap:16px; }
+.g4      { display:grid; grid-template-columns:repeat(4,1fr);   gap:14px; }
+.g3-wide { display:grid; grid-template-columns:1.4fr 1fr 1fr;   gap:16px; }
+.g2-wide { display:grid; grid-template-columns:1.55fr 1fr;      gap:20px; }
+
+/* ─── SPACING / FLEX ─── */
+.mt8{margin-top:8px}  .mt12{margin-top:12px} .mt16{margin-top:16px}
+.mt24{margin-top:24px}.mt32{margin-top:32px} .mt48{margin-top:48px}
+.flex{display:flex} .col{flex-direction:column} .ac{align-items:center}
+.g16{gap:16px} .g24{gap:24px} .g32{gap:32px} .grow{flex:1}
+
+/* ─── HERO BG ─── */
+.hero-bg { background:#090D14; }
+canvas.bg { position:absolute; inset:0; z-index:0; pointer-events:none; }
+.z1 { position:relative; z-index:1; }
+
+::-webkit-scrollbar { display:none; }
+</style>
+</head>
+<body>
+<div id="deck">
+<div id="progress" style="width: 7.69231%;"></div>
+<div id="counter">1 / 13</div>
+
+<!-- ════════════════════════════════════
+     01 · HERO
+════════════════════════════════════ -->
+<div class="slide hero-bg active" id="s1">
+  <canvas class="bg" id="cv1" width="1920" height="929"></canvas>
+  <div class="z1 flex col" style="height:100%">
+    <div class="grow"></div>
+    <span class="badge b-ora fu d1" style="">Notch × Israel Discount Bank · May 2026</span>
+    <div class="hero mt24 fu d2" style="">
+      Some processes have<br>no margin for error.<br><span class="shimmer">We built for those.</span>
+    </div>
+    <div class="sep fu d3" style=""></div>
+    <div class="h2 t-dim mt16 fu d4" style="font-weight: 300; max-width: 660px;">
+      An agent platform that executes inside regulated decisions —<br>not a chatbot. Not a concept. A production-grade execution engine.
+    </div>
+    <div style="flex:2"></div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     02 · THREE MOMENTS  (new — not in Dan's deck)
+════════════════════════════════════ -->
+<div class="slide prev" id="s2">
+  <div class="cap fu d1" style="">The decisions that define customer trust</div>
+  <div class="h1 mt16 fu d2" style="">Three moments.<br><span class="t-ora">Three chances to act — or fail.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="g3 mt24">
+    <div class="card fu d3" style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="cap t-ora">12am — card blocked abroad</div>
+      <div style="padding:14px;background:rgba(255,76,76,.06);border-radius:10px;border:1px solid rgba(255,76,76,.2)">
+        <div class="sm" style="color:var(--red); font-weight:600; margin-bottom:6px">Generic AI</div>
+        <div class="sm">18-minute queue. Card stays blocked. Customer stranded. Calls again in the morning — angry.</div>
+      </div>
+      <div style="padding:14px;background:rgba(74,222,128,.06);border-radius:10px;border:1px solid rgba(74,222,128,.2)">
+        <div class="sm" style="color:var(--green); font-weight:600; margin-bottom:6px">Notch</div>
+        <div class="sm">Authenticated in seconds. Replacement ordered via API. Customer informed. Resolved — no hold.</div>
+      </div>
+    </div>
+    <div class="card fu d4" style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="cap t-ora">Dispute filed. Customer watching.</div>
+      <div style="padding:14px;background:rgba(255,76,76,.06);border-radius:10px;border:1px solid rgba(255,76,76,.2)">
+        <div class="sm" style="color:var(--red); font-weight:600; margin-bottom:6px">Generic AI</div>
+        <div class="sm">Manual form submission. 3–5 day wait. No status. Customer calls back. Agent re-explains from scratch.</div>
+      </div>
+      <div style="padding:14px;background:rgba(74,222,128,.06);border-radius:10px;border:1px solid rgba(74,222,128,.2)">
+        <div class="sm" style="color:var(--green); font-weight:600; margin-bottom:6px">Notch</div>
+        <div class="sm">Provisional credit initiated via live API. Regulatory audit trail created. Proactive status updates — no callback needed.</div>
+      </div>
+    </div>
+    <div class="card fu d5" style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="cap t-ora">Account locked. End of month peak.</div>
+      <div style="padding:14px;background:rgba(255,76,76,.06);border-radius:10px;border:1px solid rgba(255,76,76,.2)">
+        <div class="sm" style="color:var(--red); font-weight:600; margin-bottom:6px">Generic AI</div>
+        <div class="sm">24-minute wait. Agent can't verify fast enough. Customer calls a competitor. Churn event — invisible in your dashboard.</div>
+      </div>
+      <div style="padding:14px;background:rgba(74,222,128,.06);border-radius:10px;border:1px solid rgba(74,222,128,.2)">
+        <div class="sm" style="color:var(--green); font-weight:600; margin-bottom:6px">Notch</div>
+        <div class="sm">Identity verified. Access restored. Escalated only when confidence threshold isn't met. It never guesses.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card mt16 fu d7" style="background: rgba(255, 86, 27, 0.04); border-color: rgba(255, 86, 27, 0.2);">
+    <div class="body"><strong>The cost of error in banking is not a bad CSAT score.</strong><span class="t-dim"> It's a customer without access to their money, a regulatory incident, and a backlog that compounds daily. Notch was built to eliminate all three — simultaneously.</span></div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     03 · GLOBAL PROOF
+════════════════════════════════════ -->
+<div class="slide prev" id="s3">
+  <div class="cap fu d1" style="">What the world's most regulated banks have already proven</div>
+  <div class="h1 mt16 fu d2" style="">The decision has been made.<br><span class="t-ora">Everywhere else.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="g4 mt24">
+    <div class="card fu d3" style="">
+      <div class="cap" style="color:var(--muted)">JPMorgan Chase</div>
+      <div class="h2 t-ora mt12">$2B</div>
+      <div class="body t-dim mt8">annual AI-driven value</div>
+      <div class="sm mt16">30% reduction in servicing costs. AI use cases doubling year over year. Not a pilot — a P&amp;L line.</div>
+    </div>
+    <div class="card fu d4" style="">
+      <div class="cap" style="color:var(--muted)">Capital One — Eno</div>
+      <div class="h2 t-ora mt12">−50%</div>
+      <div class="body t-dim mt8">call center contact volume</div>
+      <div class="sm mt16">Human agents moved to complex, high-value cases. AI handles everything routine — 24/7.</div>
+    </div>
+    <div class="card fu d5" style="">
+      <div class="cap" style="color:var(--muted)">Bank of America — Erica</div>
+      <div class="h2 t-ora mt12">3.2B</div>
+      <div class="body t-dim mt8">AI interactions handled</div>
+      <div class="sm mt16">Not a concept. Not a demo. 3.2 billion real customer interactions resolved in production.</div>
+    </div>
+    <div class="card fu d6" style="">
+      <div class="cap" style="color:var(--muted)">DBS Singapore</div>
+      <div class="h2 t-ora mt12">$750M</div>
+      <div class="body t-dim mt8">enterprise value by 2028</div>
+      <div class="sm mt16">800 AI models. 350 live use cases. Every customer journey — AI-embedded.</div>
+    </div>
+  </div>
+  <div class="card mt16 fu d7" style="background: rgba(255, 86, 27, 0.04); border-color: rgba(255, 86, 27, 0.2);">
+    <div class="body"><strong>92%</strong><span class="t-dim"> of global banks now deploy AI in at least one core function. BBVA has 150 autonomous agent actions live. The question is no longer "if." It's "how far behind are we willing to be?"</span></div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     04 · IDB TODAY — competitive position
+════════════════════════════════════ -->
+<div class="slide prev" id="s4">
+  <div class="cap fu d1" style="">Bank of Israel · 2025 Household Satisfaction Survey</div>
+  <div class="h1 mt16 fu d2" style="">IDB has the digital base.<br><span class="t-ora">Resolution is the missing layer.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="g2 mt24">
+    <div class="flex col" style="gap:14px">
+      <div class="card fu d3" style="">
+        <div class="cap" style="color:var(--muted)">Where IDB is strong</div>
+        <div class="h3 mt10">60%+ digital adoption · Growing SMB base</div>
+        <div class="sm mt8">Strong mobile infrastructure. Engaged digital-first customers. Discount 2030 has the ambition and the mandate.</div>
+      </div>
+      <div class="card fu d4" style="border-color: rgba(255, 86, 27, 0.35);">
+        <div class="cap t-ora">Where the gap lives — 2025 BOI Survey</div>
+        <div class="h3 mt10">Phone wait times · Problem resolution</div>
+        <div class="sm mt8">91% of Israeli banking customers use digital and phone. Satisfaction with phone service lags digital by 15 points. This is exactly where Leumi is winning — and where AI executes.</div>
+      </div>
+    </div>
+    <div class="flex col" style="gap:14px">
+      <div class="card fu d4" style="border-color: rgba(255, 76, 76, 0.3); background: rgba(255, 76, 76, 0.03);">
+        <div class="cap t-red">Leumi's 2025 move</div>
+        <div class="h3 mt10">Ranked #1 in call center wait times</div>
+        <div class="sm mt8">Not because they hired more agents. Because their GenAI hub went to production. Every month it runs, the service survey gap compounds. The 2026 survey publishes in 12 months.</div>
+      </div>
+      <div class="card fu d5" style="border-color: rgba(81, 130, 255, 0.25); background: rgba(81, 130, 255, 0.03);">
+        <div class="cap t-blue">Discount 2030 gap</div>
+        <div class="h3 mt10">Efficiency targets · No announced CX AI program</div>
+        <div class="sm mt8">Cost-income ratio targeting the low-40s. 20 efficiency projects active. Digital costs already down 30%. But no public customer-facing AI agent initiative — yet. That's the window.</div>
+      </div>
+      <div class="card-sm fu d6" style="background: rgba(255, 86, 27, 0.04); border-color: rgba(255, 86, 27, 0.2);">
+        <div class="body t-dim"><strong class="t-white">BOI validation cycles: 6–9 months.</strong> A decision today = production agents in 2027. A decision in 6 months = after the next service survey.</div>
+      </div>
+    </div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     05 · ROI — cost of inaction
+════════════════════════════════════ -->
+<div class="slide prev" id="s5">
+  <div class="flex col" style="height:100%;justify-content:center">
+    <div class="cap fu d1" style="">Forrester Research · Total Economic Impact Study</div>
+    <div class="flex ac mt16" style="gap:6px;line-height:1">
+      <div class="stat t-ora fu d2" id="ct210" style="opacity: 1; animation: auto ease 0s 1 normal none running none;">210</div>
+      <div class="h1 t-ora fu d3" style="align-self: flex-end; margin-bottom: 14px;">%</div>
+    </div>
+    <div class="h1 fu d3" style="font-weight: 300;">ROI over <strong>3 years.</strong> Payback under <strong>6 months.</strong></div>
+    <div class="beam-line mt24 fu d4" style="max-width: 460px;"></div>
+    <div class="g4 mt24">
+      <div class="card-sm fu d5" style="">
+        <div class="h2 t-ora">40–60%</div>
+        <div class="body t-dim mt8">Tier 1 deflection</div>
+        <div class="sm mt6">Industry average — mature deployments</div>
+      </div>
+      <div class="card-sm fu d5" style="">
+        <div class="h2 t-ora">30–40%</div>
+        <div class="body t-dim mt8">Cost-per-contact drop</div>
+        <div class="sm mt6">Consistent across banking verticals</div>
+      </div>
+      <div class="card-sm fu d6" style="">
+        <div class="h2 t-ora">3.5×</div>
+        <div class="body t-dim mt8">Average ROI at 18 months</div>
+        <div class="sm mt6">Cross-industry benchmark</div>
+      </div>
+      <div class="card-sm fu d7" style="">
+        <div class="h2 t-ora">$85B</div>
+        <div class="body t-dim mt8">AI banking spend by 2030</div>
+        <div class="sm mt6">This is where the industry is going</div>
+      </div>
+    </div>
+    <div class="quote-block mt24 fu d7" style="">
+      <div class="body t-dim">"AI-assisted service is reducing average handling times by 20–40% in high-volume workflows. Banks that start now build compounding advantages." — Financial Brand, 2025</div>
+    </div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     06 · WHAT NOTCH IS — Rafael's framing
+════════════════════════════════════ -->
+<div class="slide prev" id="s6">
+  <div class="cap fu d1" style="">The platform</div>
+  <div class="h1 mt16 fu d2" style="">An agent platform for processes where<br>the <span class="t-ora">cost of error is astronomical.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="g2-wide mt24">
+    <div class="flex col" style="gap:11px">
+      <div class="exec-step fu d3" style="">
+        <span style="font-size:20px;color:var(--green)">✓</span>
+        <div>
+          <div class="h3">Dispute filed → Provisional credit <em>initiated</em></div>
+          <div class="sm mt6">Live API call into core banking. Regulatory guardrails. Full audit trail. No human in the loop — unless the agent says so.</div>
+        </div>
+      </div>
+      <div class="exec-step fu d4" style="">
+        <span style="font-size:20px;color:var(--green)">✓</span>
+        <div>
+          <div class="h3">Card blocked → Replacement <em>ordered</em></div>
+          <div class="sm mt6">24/7. Time-critical. Zero wait. Not a ticket logged. An outcome delivered.</div>
+        </div>
+      </div>
+      <div class="exec-step fu d5" style="">
+        <span style="font-size:20px;color:var(--green)">✓</span>
+        <div>
+          <div class="h3">Account locked → Access <em>restored</em></div>
+          <div class="sm mt6">Identity verified against your policies. Action taken. Escalated only when confidence isn't met. Never guesses.</div>
+        </div>
+      </div>
+      <div class="exec-step fu d6" style="">
+        <span style="font-size:20px;color:var(--green)">✓</span>
+        <div>
+          <div class="h3">Mortgage in queue → Documents <em>chased, validated, filed</em></div>
+          <div class="sm mt6">Drives the pipeline automatically. Loan officers spend their week on decisions — not document chasing.</div>
+        </div>
+      </div>
+    </div>
+    <div class="fu d4" style="">
+      <div class="glow-card">
+        <div class="glow-card-inner">
+          <span class="badge b-ora" style="margin-bottom:14px">The core difference</span>
+          <div class="h3">Other AI talks to your customers.<br><span class="t-ora">Notch acts for them.</span></div>
+          <div class="body t-dim mt16">When conditions are met, Notch executes — no hand-off, no queue, no hold music. An outcome is delivered. An audit trail is created. A human is involved only when the stakes require judgment.</div>
+          <div class="body t-dim mt16">That's not CX automation. That's operational transformation — starting from the customer's first touch.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     07 · PLATFORM BREADTH — tiered view
+════════════════════════════════════ -->
+<div class="slide prev" id="s7">
+  <div class="cap fu d1" style="">40+ agents — one execution engine</div>
+  <div class="h1 mt16 fu d2" style="">Start where the volume is loudest.<br><span class="t-ora">The platform doesn't stop there.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="flex col mt24" style="gap:13px">
+    <div class="tier-row fu d3" style="">
+      <div class="tier-num">01</div>
+      <div class="flex col" style="gap:5px;flex:1">
+        <div class="h3 t-ora">Customer-Facing CX — Start here</div>
+        <div class="sm">Card block · Tier 1 resolution · Dispute &amp; provisional credit · Fraud alerts · Onboarding · Branch booking · SMB banking</div>
+        <div class="sm mt4" style="color:var(--muted)">40–60% of all inbound. Fastest payback. Measurable within 90 days. The wedge.</div>
+      </div>
+      <div class="badge b-ora" style="white-space:nowrap;align-self:center">Fastest ROI</div>
+    </div>
+    <div class="tier-row fu d4" style="">
+      <div class="tier-num" style="color:var(--blue)">02</div>
+      <div class="flex col" style="gap:5px;flex:1">
+        <div class="h3" style="color:var(--blue)">Back-Office &amp; Operations — The hidden headcount</div>
+        <div class="sm">Dispute ops · KYC &amp; onboarding ops · Payment investigations · Reconciliation queues · Collections · <strong class="t-white">Mortgage origination</strong></div>
+        <div class="sm mt4" style="color:var(--muted)">Often larger than the contact center. Mortgage origination alone — weeks of document chasing, income verification, appraisal coordination — can justify the platform.</div>
+      </div>
+      <div class="badge b-blue" style="white-space:nowrap;align-self:center">Highest volume</div>
+    </div>
+    <div class="tier-row fu d5" style="">
+      <div class="tier-num" style="color:var(--green)">03</div>
+      <div class="flex col" style="gap:5px;flex:1">
+        <div class="h3 t-dim">Internal &amp; Employee-Facing — The invisible drag</div>
+        <div class="sm">IT helpdesk · HR service · Branch &amp; frontline assistant · Compliance Q&amp;A</div>
+        <div class="sm mt4" style="color:var(--muted)">Frees specialist headcount from repetitive internal tickets. High value per head — nobody measures it until it's gone.</div>
+      </div>
+      <div class="badge b-grn" style="white-space:nowrap;align-self:center">Long runway</div>
+    </div>
+  </div>
+  <div class="card mt16 fu d6" style="background: rgba(255, 86, 27, 0.04); border-color: rgba(255, 86, 27, 0.2);">
+    <div class="body"><strong>The right starting point:</strong><span class="t-dim"> Prove the model on one use case — card block or disputes — in 90 days. Build the business case from real data, not projections. Then the platform opens every workflow in the bank.</span></div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     08 · BUILT FOR ISRAEL
+════════════════════════════════════ -->
+<div class="slide prev" id="s8">
+  <div class="cap fu d1" style="">Why Notch for IDB specifically</div>
+  <div class="h1 mt16 fu d2" style="">We didn't localize for Israel.<br><span class="t-ora">This is our home market.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="g2 mt24">
+    <div class="flex col" style="gap:11px">
+      <div class="exec-step fu d3" style="">
+        <span style="font-size:18px;color:var(--green)">✓</span>
+        <div>
+          <div class="h3">Hebrew-first — not translated</div>
+          <div class="sm mt6">Nuance, intent, banking colloquialisms — all native. Not a US platform shipped with an Israeli language pack.</div>
+        </div>
+      </div>
+      <div class="exec-step fu d4" style="">
+        <span style="font-size:18px;color:var(--green)">✓</span>
+        <div>
+          <div class="h3">BOI Directive 362 — Data residency by architecture</div>
+          <div class="sm mt6">On-prem or Azure IL deployment. Customer data never leaves your defined perimeter. Designed in — not retrofitted.</div>
+        </div>
+      </div>
+      <div class="exec-step fu d5" style="">
+        <span style="font-size:18px;color:var(--green)">✓</span>
+        <div>
+          <div class="h3">BOI Directive 369 — Explainability built in</div>
+          <div class="sm mt6">Full decision lineage on every interaction. Your model-risk committee gets complete auditability — not a black box to validate.</div>
+        </div>
+      </div>
+      <div class="exec-step fu d6" style="">
+        <span style="font-size:18px;color:var(--green)">✓</span>
+        <div>
+          <div class="h3">SOC 2 Type II · Financial-grade security posture</div>
+          <div class="sm mt6">Complete documentation package available for your CISO. DPA tailored for Israeli financial services regulation.</div>
+        </div>
+      </div>
+    </div>
+    <div class="fu d4" style="">
+      <div class="glow-card">
+        <div class="glow-card-inner">
+          <span class="badge b-grn" style="margin-bottom:14px">Founded Tel Aviv · 2021</span>
+          <div class="h3">Broshi. Jacoby. Peled.<br>BOI compliance is our native language.</div>
+          <div class="body t-dim mt16">We designed for Directive 362 and 369 from the first line of code. The 6–9 month model-risk validation cycles your team navigates every day? We built the architecture to pass them cleanly — not to navigate around them.</div>
+          <div class="body t-dim mt16"><strong class="t-white">$45M raised.</strong> $30M Series A closed 2025. <strong class="t-white">12× ARR growth in 12 months.</strong> Well-funded, not a risky startup bet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     09 · TRUST ARCHITECTURE
+════════════════════════════════════ -->
+<div class="slide prev" id="s9">
+  <div class="cap fu d1" style="">Security &amp; governance</div>
+  <div class="h1 mt16 fu d2" style="">Notch gives you more accountability<br>than your <span class="t-ora">phone agents have today.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="g3 mt24">
+    <div class="card fu d3" style="">
+      <div class="badge b-grn" style="margin-bottom:12px">Data residency</div>
+      <div class="h3">Your perimeter.<br>Your infrastructure.</div>
+      <div class="sm mt12">Customer PII never leaves your boundary. On-prem or Azure IL. BOI Directive 362 compliant by architecture — verifiable, not promised.</div>
+    </div>
+    <div class="card fu d4" style="">
+      <div class="badge b-grn" style="margin-bottom:12px">Full auditability</div>
+      <div class="h3">Every decision<br>has a paper trail.</div>
+      <div class="sm mt12">Complete log per interaction: which policy triggered, what input, what action. Your phone agents produce no equivalent record. Notch does — automatically.</div>
+    </div>
+    <div class="card fu d5" style="">
+      <div class="badge b-grn" style="margin-bottom:12px">Permission architecture</div>
+      <div class="h3">The agent only does<br>what you authorize.</div>
+      <div class="sm mt12">Every permitted action is defined by your team. Card block: yes. Transfer above ₪X: requires human sign-off. Fully configurable — to your policy, not ours.</div>
+    </div>
+  </div>
+  <div class="card mt16 fu d6" style="background: rgba(74, 222, 128, 0.04); border-color: rgba(74, 222, 128, 0.2);">
+    <div class="body"><strong>The reframe for your CISO:</strong><span class="t-dim"> The risk isn't "what might Notch say to our customers." It's "what are our agents telling them right now, with no audit trail, no consistency, and no documentation?" Notch doesn't introduce risk — it replaces an existing, unmeasured one with complete accountability.</span></div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     10 · PROOF IN NUMBERS — new consolidated slide
+════════════════════════════════════ -->
+<div class="slide prev" id="s10">
+  <div class="cap fu d1" style="">Notch in production — verified results</div>
+  <div class="h1 mt16 fu d2" style="">These aren't projections.<br><span class="t-ora">They're already on the board.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="g4 mt32">
+    <div class="card fu d3" style="text-align: center; padding: 28px 16px;">
+      <div class="proof-n">12×</div>
+      <div class="h3 mt12">ARR growth</div>
+      <div class="sm mt8">In 12 months. Not hype — market pull in regulated verticals.</div>
+    </div>
+    <div class="card fu d4" style="text-align: center; padding: 28px 16px;">
+      <div class="proof-n">60</div>
+      <div class="h3 mt12">Agent equiv. saved</div>
+      <div class="sm mt8">Per deployment. Headcount relief that shows in the cost-income ratio.</div>
+    </div>
+    <div class="card fu d5" style="text-align: center; padding: 28px 16px;">
+      <div class="proof-n">67%</div>
+      <div class="h3 mt12">Autonomous resolve</div>
+      <div class="sm mt8">No human required. Complete resolution. Verified outcome. Audit trail attached.</div>
+    </div>
+    <div class="card fu d6" style="text-align: center; padding: 28px 16px;">
+      <div class="proof-n">3.5</div>
+      <div class="h3 mt12">Weeks to clear 20K</div>
+      <div class="sm mt8">Ticket backlog eliminated in one deployment. Would have taken months manually.</div>
+    </div>
+  </div>
+  <div class="g2 mt16">
+    <div class="card-sm fu d7" style="background: rgba(74, 222, 128, 0.04); border-color: rgba(74, 222, 128, 0.2);">
+      <div class="body"><strong>$45M raised · $30M Series A, 2025.</strong><span class="t-dim"> Well-capitalized. Built for enterprise scale. Not a proof-of-concept company making a pitch.</span></div>
+    </div>
+    <div class="card-sm fu d7" style="">
+      <div class="body"><strong>Banking and insurance — only.</strong><span class="t-dim"> We don't do retail. We don't do logistics. Four years of depth in regulated industries, with zero dilution of focus.</span></div>
+    </div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     11 · DISCOUNT 2030 ALIGNMENT
+════════════════════════════════════ -->
+<div class="slide prev" id="s11">
+  <div class="cap fu d1" style="">Strategic fit</div>
+  <div class="h1 mt16 fu d2" style="">Notch maps directly onto<br><span class="t-ora">Discount 2030.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="g3-wide mt24">
+    <div class="fu d3" style="">
+      <div class="glow-card">
+        <div class="glow-card-inner">
+          <div class="h3">Smart Future initiative</div>
+          <div class="body t-dim mt16">IDB's transformation agenda names AI as a strategic pillar. A live, customer-facing execution agent is not a footnote — it's a headline win for the 2027 annual report. Measurable. Board-attributable. Externally visible.</div>
+          <div class="body t-dim mt16">A successful 90-day POC on card block gives leadership a concrete proof point — one that validates "Smart Future" with numbers, not narrative.</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex col" style="gap:12px">
+      <div class="card-sm fu d4" style="">
+        <div class="cap t-ora">Cost-income ratio</div>
+        <div class="h3 mt8">Targeting the low-40s</div>
+        <div class="sm mt8">40–60% Tier 1 deflection reduces cost-per-contact directly — visible in the efficiency ratio at board level.</div>
+      </div>
+      <div class="card-sm fu d5" style="">
+        <div class="cap t-ora">Digital amplification</div>
+        <div class="h3 mt8">Turn engagement into resolution</div>
+        <div class="sm mt8">IDB has 60%+ digital adoption. Notch turns that reach into closed loops — every mobile touchpoint becomes a resolved outcome.</div>
+      </div>
+    </div>
+    <div class="flex col" style="gap:12px">
+      <div class="card-sm fu d5" style="">
+        <div class="cap t-ora">SMB &amp; business banking</div>
+        <div class="h3 mt8">Scale without adding headcount</div>
+        <div class="sm mt8">High-LTV segment with complex needs. AI handles the routine so your RMs stay on the relationships that move revenue.</div>
+      </div>
+      <div class="card-sm fu d6" style="background: rgba(255, 86, 27, 0.04); border-color: rgba(255, 86, 27, 0.2);">
+        <div class="cap t-ora">The clock</div>
+        <div class="h3 mt8">12 months to the 2026 BOI survey</div>
+        <div class="sm mt8">Leumi won on call center wait times in 2025. A production agent live by Q1 2027 means IDB is in the conversation next cycle.</div>
+      </div>
+    </div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     12 · 90-DAY PATH TO PROOF
+════════════════════════════════════ -->
+<div class="slide prev" id="s12">
+  <div class="cap fu d1" style="">A low-risk path to proof</div>
+  <div class="h1 mt16 fu d2" style="">One agent. One use case.<br><span class="t-ora">90 days. Real stakes.</span></div>
+  <div class="sep fu d3" style=""></div>
+  <div class="g3 mt24">
+    <div class="card poc fu d3" style="">
+      <div class="cap t-ora mt12">Weeks 1–2</div>
+      <div class="h3 mt16">API Integration &amp; Policy Ingestion</div>
+      <div class="body t-dim mt16">Notch handles the engineering. Minimal IT load on your team. Compliance documentation pack delivered on day one — ready for your CISO review.</div>
+    </div>
+    <div class="card poc fu d4" style="">
+      <div class="cap t-ora mt12">Weeks 3–8</div>
+      <div class="h3 mt16">Card Block Agent: Live in Production</div>
+      <div class="body t-dim mt16">Real customers. Real stakes. 24/7 from day one. BOI-compliant audit trail on every single interaction from the first second it runs.</div>
+    </div>
+    <div class="card poc fu d5" style="">
+      <div class="cap t-ora mt12">Weeks 9–12</div>
+      <div class="h3 mt16">Measure. Report. Expand.</div>
+      <div class="body t-dim mt16">Deflection rate vs. baseline. CSAT delta. Cost savings. Every metric agreed upfront — business case built from actual production data, not modeled estimates.</div>
+    </div>
+  </div>
+  <div class="g2 mt16">
+    <div class="card-sm fu d6" style="background: rgba(255, 86, 27, 0.04); border-color: rgba(255, 86, 27, 0.2);">
+      <div class="body"><strong>Self-funding framing:</strong><span class="t-dim"> 30% deflection on card-block volume over 90 days covers the POC cost at IDB's scale. We model this against your actual call volume in the scoping session.</span></div>
+    </div>
+    <div class="card-sm fu d7" style="">
+      <div class="body"><strong>What you're risking:</strong><span class="t-dim"> 90 days and a defined scope. If the numbers don't justify expansion — you've learned exactly what to expect. If they do — you have a Discount 2030 line item ready to present.</span></div>
+    </div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     13 · CLOSING — the ask
+════════════════════════════════════ -->
+<div class="slide hero-bg prev" id="s13">
+  <canvas class="bg" id="cv13" width="1920" height="929"></canvas>
+  <div class="z1 flex col" style="height:100%">
+    <div class="grow"></div>
+    <div class="cap fu d1" style="">Before we close — one question</div>
+    <div class="hero mt16 fu d2" style="">
+      Which IDB workflow has<br><span class="shimmer">zero margin for error</span><br>and the most volume?
+    </div>
+    <div class="sep fu d3" style=""></div>
+    <div class="h2 t-dim mt24 fu d4" style="font-weight: 300; max-width: 660px;">
+      That's where we start. The next step is a technical scoping session —<br>
+      your CTO, your CISO, and the Notch compliance team.<br>
+      <strong class="t-white">This week.</strong>
+    </div>
+    <div class="mt48 fu d5" style="">
+      <a href="https://www.notch.cx/book-a-demo" class="cta-btn">Let's scope it → notch.cx</a>
+    </div>
+    <div style="flex:2"></div>
+  </div>
+  <div class="logo-bar">
+    <img src="./notch_files/6971f49745b3b703c5e0aac5_Notch-Logo-White.svg" class="notch-logo" alt="Notch">
+    <div class="idb-logo-text">Israel Discount Bank</div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+/* ─── SLIDE ENGINE ─── */
+const slides = [...document.querySelectorAll('.slide')];
+const total  = slides.length;
+let   cur    = 0;
+
+function goTo(n) {
+  if (n < 0 || n >= total || n === cur) return;
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('prev');
+  setTimeout(() => slides[cur].classList.remove('prev'), 500);
+  cur = n;
+  const s = slides[cur];
+  s.classList.add('active');
+  s.querySelectorAll('.fu').forEach(el => {
+    el.style.animation = 'none';
+    void el.offsetHeight;
+    el.style.animation = '';
+  });
+  updateChrome();
+  onEnter(cur);
+}
+
+function updateChrome() {
+  document.getElementById('progress').style.width = ((cur + 1) / total * 100) + '%';
+  document.getElementById('counter').textContent  = (cur + 1) + ' / ' + total;
+}
+
+document.addEventListener('keydown', e => {
+  if (['ArrowRight', 'ArrowDown', ' '].includes(e.key))        { e.preventDefault(); goTo(cur + 1); }
+  if (['ArrowLeft',  'ArrowUp',  'Backspace'].includes(e.key)) { e.preventDefault(); goTo(cur - 1); }
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend',   e => {
+  const d = tx - e.changedTouches[0].clientX;
+  if (Math.abs(d) > 48) goTo(d > 0 ? cur + 1 : cur - 1);
+}, { passive: true });
+
+/* ─── PARTICLES ─── */
+function particles(id) {
+  const cv = document.getElementById(id);
+  if (!cv || cv._on) return;
+  cv._on = true;
+  const ctx = cv.getContext('2d');
+  const resize = () => { cv.width = innerWidth; cv.height = innerHeight; };
+  resize();
+  addEventListener('resize', resize);
+  const N = 50, pts = Array.from({ length: N }, () => ({
+    x: Math.random() * cv.width, y: Math.random() * cv.height,
+    vx: (Math.random() - .5) * .32, vy: (Math.random() - .5) * .32,
+    r: Math.random() * 1.3 + .4, a: Math.random() * .3 + .1
+  }));
+  (function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
+      const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 115) {
+        ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+        ctx.strokeStyle = `rgba(81,130,255,${.07 * (1 - d / 115)})`; ctx.lineWidth = .55; ctx.stroke();
+      }
+    }
+    pts.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,86,27,${p.a})`; ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > cv.width)  p.vx *= -1;
+      if (p.y < 0 || p.y > cv.height) p.vy *= -1;
+    });
+    requestAnimationFrame(draw);
+  })();
+}
+
+/* ─── COUNT UP ─── */
+function countUp(el, target, ms) {
+  if (!el) return;
+  const t0 = performance.now();
+  (function tick(now) {
+    const p = Math.min((now - t0) / ms, 1), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.floor(e * target);
+    if (p < 1) requestAnimationFrame(tick);
+    else { el.textContent = target; el.style.animation = 'none'; el.style.opacity = '1'; }
+  })(t0);
+}
+
+/* ─── PER-SLIDE HOOKS ─── */
+function onEnter(i) {
+  if (i === 0)  particles('cv1');
+  if (i === 12) particles('cv13');
+  if (i === 4)  setTimeout(() => countUp(document.getElementById('ct210'), 210, 1400), 300);
+}
+
+/* ─── INIT ─── */
+updateChrome();
+particles('cv1');
+</script>
+
+
+</body></html>
